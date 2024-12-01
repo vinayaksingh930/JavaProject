@@ -55,27 +55,6 @@ public class ShapeDrawer extends JPanel {
         });
         toolbar.add(colorButton);
 
-        // Resize button (for resizing shapes)
-        JButton resizeButton = new JButton("Resize Shape");
-        resizeButton.addActionListener(e -> {
-            if (hoveredShape != null) {
-                hoveredShape.resize(1.1); // Resize by 10% (scale up)
-                repaint();
-            }
-        });
-        toolbar.add(resizeButton);
-
-        // Remove button (for removing shapes)
-        JButton removeButton = new JButton("Remove Shape");
-        removeButton.addActionListener(e -> {
-            if (hoveredShape != null) {
-                shapes.remove(hoveredShape);
-                hoveredShape = null;  // Reset the hovered shape after removal
-                repaint();
-            }
-        });
-        toolbar.add(removeButton);
-
         // Add toolbar to the frame
         add(toolbar, BorderLayout.NORTH);
 
