@@ -1,5 +1,6 @@
 import java.awt.*;
 import javax.swing.*;
+
 public class TextEditorFrame extends JFrame {
     private JTextArea textArea;
     private JFileChooser fileChooser;
@@ -72,23 +73,33 @@ public class TextEditorFrame extends JFrame {
         JMenuItem rectangleItem = new JMenuItem("Rectangle");
         JMenuItem circleItem = new JMenuItem("Circle");
         JMenuItem lineItem = new JMenuItem("Line");
+        JMenuItem triangleItem = new JMenuItem("Triangle");
+        JMenuItem ovalItem = new JMenuItem("Oval");  // Replaced "Hexagon" with "Oval"
 
-        JMenuItem insertShapesItem = new JMenuItem("Insert Shapes");
-        insertShapesItem.addActionListener(e -> TextEditorFunctions.insertShapes(textArea));
-
+        // Set shape type for each option
         rectangleItem.addActionListener(e -> shapeDrawer.setShapeType("Rectangle"));
         circleItem.addActionListener(e -> shapeDrawer.setShapeType("Circle"));
         lineItem.addActionListener(e -> shapeDrawer.setShapeType("Line"));
+        triangleItem.addActionListener(e -> shapeDrawer.setShapeType("Triangle"));
+        ovalItem.addActionListener(e -> shapeDrawer.setShapeType("Oval"));  // Added action for Oval
 
         shapeMenu.add(rectangleItem);
         shapeMenu.add(circleItem);
         shapeMenu.add(lineItem);
-        shapeMenu.add(insertShapesItem);
+        shapeMenu.add(triangleItem);
+        shapeMenu.add(ovalItem);  // Added Oval menu item
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(shapeMenu);
 
         return menuBar;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            TextEditorFrame frame = new TextEditorFrame();
+            frame.setVisible(true);
+        });
     }
 }

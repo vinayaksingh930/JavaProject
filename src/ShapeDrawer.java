@@ -1,8 +1,7 @@
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
+import java.awt.geom.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -46,6 +45,12 @@ public class ShapeDrawer extends JPanel {
                     case "line":
                         currentShape = new Line2D.Float(startPoint, startPoint);
                         break;
+                    case "triangle":
+                        currentShape = createTriangle(startPoint);
+                        break;
+                    case "oval":
+                        currentShape = createOval(startPoint);
+                        break;
                 }
                 if (currentShape != null) {
                     shapes.add(currentShape);
@@ -86,6 +91,27 @@ public class ShapeDrawer extends JPanel {
         });
     }
 
+    // Create a triangle shape based on the starting point
+    private Shape createTriangle(Point startPoint) {
+        int x1 = startPoint.x;
+        int y1 = startPoint.y;
+        int x2 = x1 + 50;
+        int y2 = y1;
+        int x3 = x1 + 25;
+        int y3 = y1 - 50;
+        Polygon triangle = new Polygon(new int[]{x1, x2, x3}, new int[]{y1, y2, y3}, 3);
+        return triangle;
+    }
+
+    // Create an oval shape based on the starting point
+    private Shape createOval(Point startPoint) {
+        int x = startPoint.x;
+        int y = startPoint.y;
+        int width = 50;
+        int height = 30;
+        return new Ellipse2D.Float(x, y, width, height); // Oval shape
+    }
+
     // Resize the shape dynamically
     private void resizeShape(Shape shape, Point newPoint) {
         if (shape instanceof Rectangle) {
@@ -97,6 +123,13 @@ public class ShapeDrawer extends JPanel {
         } else if (shape instanceof Line2D.Float) {
             Line2D.Float line = (Line2D.Float) shape;
             line.setLine(line.getP1(), newPoint);
+        } else if (shape instanceof Polygon) {
+            Polygon polygon = (Polygon) shape;
+            // Resize polygon (triangle)
+            if (polygon.npoints == 3) {
+                polygon.xpoints[2] = newPoint.x;
+                polygon.ypoints[2] = newPoint.y;
+            }
         }
     }
 
@@ -117,6 +150,13 @@ public class ShapeDrawer extends JPanel {
         } else if (currentShape instanceof Line2D.Float) {
             Line2D.Float line = (Line2D.Float) currentShape;
             line.setLine(startPoint, endPoint);
+        } else if (currentShape instanceof Polygon) {
+            Polygon polygon = (Polygon) currentShape;
+            // For triangle, resize based on the mouse drag
+            if (polygon.npoints == 3) {
+                polygon.xpoints[2] = endPoint.x;
+                polygon.ypoints[2] = endPoint.y;
+            }
         }
     }
 
@@ -127,17 +167,28 @@ public class ShapeDrawer extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         for (Shape shape : shapes) {
             if (shape == hoveredShape) {
-                g2.setColor(Color.RED); // Highlight hovered shape
-                g2.draw(shape);
-                g2.setColor(Color.BLACK);
+                g2.setColor(Color.RED);  // Highlight hovered shape
             } else {
-                g2.draw(shape);
+                g2.setColor(Color.BLACK);
             }
+            g2.draw(shape);
         }
     }
 
-    // Set the type of shape to draw
+    // Method to dynamically set the shape type
     public void setShapeType(String shapeType) {
         this.shapeType = shapeType;
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Shape Drawer");
+        ShapeDrawer drawer = new ShapeDrawer();
+        frame.add(drawer);
+        frame.setSize(600, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+
+        // Example to set shape type (can be changed dynamically)
+        drawer.setShapeType("Oval");
     }
 }
